@@ -62,35 +62,32 @@ class TVDBConnector {
 
   refreshToken(): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log("Requesting new token");
+      console.log("[TVDB] Requesting new token");
       //noinspection TypeScriptUnresolvedFunction
       fetch(`${this.baseUrl}/refresh_token`, this.fetchOptions)
         .then(res => res.json())
         .then((data) => {
-          console.log("Got new token", data);
+          console.log("[TVDB] Got new token", data);
           this.token = data.token;
-          console.log("token", this.token);
-          console.log("headers", this.fetchOptions);
-          console.log(data.token);
           resolve();
         })
         .catch(err => {
-          console.log("Failed to get new token");
+          console.log("[TVDB] Failed to get new token");
           return reject(err)
         });
     })
   }
 
   authCheck(res, query: string) {
-    console.log("Running auth check");
+    console.log("[TVDB] Running auth check");
     if (res.status === 401) {
       // unauthorized
-      console.log("Auth check: Failed");
+      console.log("[TVDB] Auth check: Failed");
       return this.refreshToken().then(() => {
         return fetch(query, this.fetchOptions)
       });
     } else {
-      console.log("Auth check: Success");
+      console.log("[TVDB] Auth check: Success");
       return res;
     }
   }
@@ -133,7 +130,7 @@ class TVDBConnector {
       fetch(`${ROOTURL.tvdb}/series/${id}/episodes`, this.fetchOptions)
         .then(res => res.json())
         .then(({data}) => {
-          console.log(sortBy === undefined ? 'no sorting defined' : 'Sort by: ' + sortBy);
+          console.log(sortBy === undefined ? '[TVDB] no sorting defined' : '[TVDB] Sort by: ' + sortBy);
           // todo: Set up sorting
           resolve(data);
         })
